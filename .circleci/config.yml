@@ -59,9 +59,19 @@ workflows:
   build_test:
     jobs:
       - test_and_lint
+
       - docker_build_and_push:
           requires:
             - test_and_lint
+          filters:
+            branches:
+              only:
+                - main
+
       - deploy_to_heroku:
           requires:
             - docker_build_and_push
+          filters:
+            branches:
+              only:
+                - main
