@@ -38,15 +38,14 @@ jobs:
           docker_layer_caching: true
 
       # build and push Docker image
-      - run: 
-          cd oc-lettings-site; cat > .env
-          echo "SECRET_KEY=$SECRET_KEY" > .env
-          echo "SENTRY_DSN=$SENTRY_DSN" > .env
-
-      - run: |
-          docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-          docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
+      - run:
+          environment:
+            SECRET_KEY: $SECRET_KEY
+            SENTRY_DNS: $SENTRY_DNS
+          command: |
+            docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
 
   deploy_to_heroku:
     machine: true
