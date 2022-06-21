@@ -1,3 +1,4 @@
+# CircleCI
 version: 2.1
 
 orbs:
@@ -37,11 +38,14 @@ jobs:
           docker_layer_caching: true
 
       # build and push Docker image
-      - run: |
-          docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
-          echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
-          docker push $DOCKER_LOGIN/$IMAGE_NAME:$TAG
-
+      - run:
+          environment:
+            SECRET_KEY: $SECRET_KEY
+            SENTRY_DNS: $SENTRY_DNS
+          command: |
+            docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
+            echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
+            docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
   deploy_to_heroku:
     machine: true
     steps:
@@ -53,14 +57,23 @@ jobs:
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
-
 workflows:
   build_test:
     jobs:
       - test_and_lint
+
       - docker_build_and_push:
           requires:
             - test_and_lint
+          filters:
+            branches:
+              only:
+                - main
+
       - deploy_to_heroku:
           requires:
             - docker_build_and_push
+          filters:
+            branches:
+              only:
+                - main
