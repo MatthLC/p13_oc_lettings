@@ -44,7 +44,7 @@ jobs:
             SENTRY_DSN: $SENTRY_DSN
             DEBUG: $DEBUG
           command: |
-            docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
+            docker build --build-arg SENTRY_DSN=$SENTRY_DSN --build-arg SECRET_KEY=$SECRET_KEY --build-arg DEBUG=$DEBUG -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
 
