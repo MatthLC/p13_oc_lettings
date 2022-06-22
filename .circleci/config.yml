@@ -56,7 +56,7 @@ jobs:
           image: $DOCKER_LOGIN/$IMAGE_NAME
           tag: $CIRCLE_SHA1
       - docker/push:
-          image: $DOCKER_LOGIN/${IMAGE_NAME}
+          image: ${DOCKER_LOGIN}/${IMAGE_NAME}
           tag: $CIRCLE_SHA1            
 
   deploy_to_heroku:
