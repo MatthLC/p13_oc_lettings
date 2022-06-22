@@ -42,6 +42,7 @@ jobs:
           environment:
             SECRET_KEY: $SECRET_KEY
             SENTRY_DNS: $SENTRY_DNS
+            DEBUG: $DEBUG
           command: |
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
