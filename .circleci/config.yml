@@ -52,13 +52,12 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
-          extra_build_args: '--build-arg SENTRY_DSN=${SENTRY_DSN}'
-          image: ${DOCKER_LOGIN}/${IMAGE_NAME}
-          tag: ${CIRCLE_SHA1}          
+          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN'
+          image: $DOCKER_LOGIN/$IMAGE_NAME
+          tag: $CIRCLE_SHA1
       - docker/push:
-          extra_build_args: '--build-arg SENTRY_DSN=${SENTRY_DSN}'
-          image: ${DOCKER_LOGIN}/${IMAGE_NAME}
-          tag: ${CIRCLE_SHA1}  
+          image: $DOCKER_LOGIN/${IMAGE_NAME}
+          tag: $CIRCLE_SHA1            
 
   deploy_to_heroku:
     machine: true
