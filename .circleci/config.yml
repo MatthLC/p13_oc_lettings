@@ -41,7 +41,7 @@ jobs:
       - run:
           environment:
             SECRET_KEY: $SECRET_KEY
-            SENTRY_DNS: $SENTRY_DSN
+            SENTRY_DSN: $SENTRY_DSN
             DEBUG: $DEBUG
           command: |
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
