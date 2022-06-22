@@ -31,8 +31,6 @@ jobs:
           username: $DOCKER_LOGIN
           password: $DOCKER_PASSWORD
 
-      environment:
-            SENTRY_DSN: $SENTRY_DSN
     steps:
       - checkout
 
@@ -41,6 +39,11 @@ jobs:
           docker_layer_caching: true
 
       # build and push Docker image
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export SENTRY_DSN=$SENTRY_DSN' >> $BASH_ENV
+
       - run:
           command: |
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
