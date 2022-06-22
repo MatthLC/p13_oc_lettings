@@ -77,9 +77,14 @@ workflows:
     jobs:
       - test_and_lint
 
-      - docker_build_and_push:
+      - docker/publish:
+          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN'
+          image: $DOCKER_LOGIN/$IMAGE_NAME
+          tag: $CIRCLE_SHA1
+
           requires:
             - test_and_lint
+
           filters:
             branches:
               only:
@@ -87,7 +92,7 @@ workflows:
 
       - deploy_to_heroku:
           requires:
-            - docker_build_and_push
+            - docker/publish
           filters:
             branches:
               only:
