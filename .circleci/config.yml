@@ -78,7 +78,7 @@ workflows:
       - test_and_lint
 
       - docker/publish:
-          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN'
+          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN_VALUE'
           image: matthlc92/oc-lettings-docker-build
           tag: $CIRCLE_SHA1
 
