@@ -88,7 +88,7 @@ workflows:
 
       - deploy_to_heroku:
           requires:
-            - docker/publish
+            - build-and-push
           filters:
             branches:
               only:
