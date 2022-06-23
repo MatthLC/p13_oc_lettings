@@ -79,7 +79,7 @@ workflows:
 
       - docker/publish:
           extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN'
-          image: $DOCKER_LOGIN/$IMAGE_NAME
+          image: matthlc92/oc-lettings-docker-build
           tag: $CIRCLE_SHA1
 
           requires:
