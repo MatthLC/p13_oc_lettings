@@ -41,7 +41,7 @@ jobs:
       # build and push Docker image
       - run:
           command: |
-            echo '--build-arg SENTRY_DSN=$SENTRY_DSN_VALUE' >> $BASH_ENV
+            echo '--build-arg SENTRY_DSN=$SENTRY_DSN' >> $BASH_ENV
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
@@ -53,7 +53,7 @@ jobs:
       - checkout
       - docker/check
       - docker/build:
-          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN_VALUE'
+          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN --build-arg SECRET_KEY=$SECRET_KEY'
           image: matthlc92/oc-lettings-docker-build
           tag: $CIRCLE_SHA1
       - docker/push:

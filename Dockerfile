@@ -9,7 +9,7 @@ ARG SECRET_KEY
 ENV SECRET_KEY ${SECRET_KEY}
 
 ARG SENTRY_DSN
-ENV SENTRY_DSN ${SENTRY_DSN_VALUE}
+ENV SENTRY_DSN ${SENTRY_DSN}
 
 RUN pip install --upgrade pip
 COPY requirements.txt /app
