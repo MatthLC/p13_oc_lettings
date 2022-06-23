@@ -75,4 +75,72 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
- 
+
+## Déploiement
+
+### Liens
+
+Compte collaborateur disponible :
+- Email : mlc.sentry.sharing@gmail.com
+- Password : Openclassrooms.123
+
+Repo :
+- CircleCi : [CircleCi p13_orange_county_lettings](https://app.circleci.com/pipelines/github/MatthLC/p13_orange_county_lettings)
+- Docker : [Docker tags](https://hub.docker.com/r/matthlc92/oc-lettings-docker-build/tags)
+- Heroku (se connecter avec le compte ci-dessus) : [Heroku oc-lettings-1337](https://dashboard.heroku.com/apps/oc-lettings-1337)
+- Sentry (se connecter avec le compte ci-dessus) : [Sentry oc-lettings-sentry](https://sentry.io/organizations/student-x52/issues/)
+- Application en production : 
+  - [oc-lettings-1337](https://oc-lettings-1337.herokuapp.com/)
+  - [oc-lettings-1337 Admin](https://oc-lettings-1337.herokuapp.com/admin/)
+  - [oc-lettings-1337 Sentry debug](https://oc-lettings-1337.herokuapp.com/sentry-debug/)
+
+
+### Conception
+![schema_deploy](https://user-images.githubusercontent.com/85108007/175058909-d16d216b-7e44-4a42-ad4b-31362c1eaa8a.PNG)
+
+Orange County Letting est une application développée avec Django et partagée via GitHub. A chaque commit réalisé, CircleCI exécutera le script `config.yml` présent dans le dossier `.circle`.
+
+Route du déploiement :
+1. GitHub : Commit
+2. CircleCI : Exécution du script .circleci/config.yml
+3. CircleCI/Script (Toutes les branches ) : installation de l'environnement Python et lancement des tests & flake8
+4. CircleCI/Script (Branche main seulement) : installation de Docker et Build/Push de l'image vers le compte Docker à partir du Dockerfile
+5. CircleCI/Script (Branche main seulement) : Installation Heroku et déploiement de l'image vers Heroku pour éxécution
+6. Sentry : Surveillance de l'application en production sur Heroku
+
+Le déploiement est entièrement automatisé
+
+### Modifications
+
+- Docker : Dockerfile
+- CircleCI : /.circleci/config.yml
+  - Lancement des tests & flake 8, Job : test_and_lint
+  - Build & push de l'image vers Docker, Job : docker_build_and_push
+  - Déploiement vers Heroku, Job : deploy_to_heroku
+- Sentry : /oc_lettings_site/settings.py
+  - sentry_sdk (Une variable d'environnement est utilisée afin de masquer la clé)
+
+#### Variables d'environnement
+Toutes les variables devant être masquées se trouvent sur CircleCi en tant que variables d'environnement dédiées au projet `p13_orange_county_lettings`.
+
+| Variable | Description |
+| :---: | :---: |
+| DOCKER_LOGIN | Email de connection Docker |
+| DOCKER_PASSWORD | Mot de pass de connection Docker |
+| IMAGE_NAME | Nom de l'image sur Docker : oc-lettings-docker-build |
+| HEROKU_API_KEY | Clé API Heroku |
+| HEROKU_APP_NAME | Nom de l'application sur Heroku : oc-lettings-1337 |
+| SECRET_KEY | Clé Django |
+| SENTRY_DNS | DNS Sentry |
+| DEBUG | DEBUG de Django initialisé à False |
+
+### Lancement d'une image Docker [Docker tags](https://hub.docker.com/r/matthlc92/oc-lettings-docker-build/tags)
+
+Pour lancer une image en local :
+```
+tagname est le tag de l'image
+docker run -d -p 8000:8000 matthlc92/oc-lettings-docker-build:tagname
+
+exemple:
+docker run -d -p 8000:8000 matthlc92/oc-lettings-docker-build:9891ee25ce447303ef9d9a59cb732c5adf3d5ec1
+```
