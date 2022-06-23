@@ -41,23 +41,9 @@ jobs:
       # build and push Docker image
       - run:
           command: |
-            docker build --build-arg SENTRY_DSN=$SENTRY_DSN --build-arg SECRET_KEY=$SECRET_KEY -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
+            docker build --build-arg SENTRY_DSN=$SENTRY_DSN --build-arg SECRET_KEY=$SECRET_KEY --build-arg DEBUG=$DEBUG -t $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1 .
             echo $DOCKER_PASSWORD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME:$CIRCLE_SHA1
-
-  build-and-push:
-    executor: docker/docker
-    steps:
-      - setup_remote_docker
-      - checkout
-      - docker/check
-      - docker/build:
-          extra_build_args: '--build-arg SENTRY_DSN=$SENTRY_DSN --build-arg SECRET_KEY=$SECRET_KEY'
-          image: matthlc92/oc-lettings-docker-build
-          tag: $CIRCLE_SHA1
-      - docker/push:
-          image: matthlc92/oc-lettings-docker-build
-          tag: $CIRCLE_SHA1            
 
   deploy_to_heroku:
     machine: true
@@ -68,6 +54,9 @@ jobs:
           command: |
             sudo curl https://cli-assets.heroku.com/install.sh | sh
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set SENTRY_DSN=$SENTRY_DSN
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set SECRET_KEY=$SECRET_KEY
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku config:set DEBUG=$DEBUG
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a $HEROKU_APP_NAME web
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a $HEROKU_APP_NAME web
 
