@@ -20,7 +20,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'how_are_you_?')
 
 DEBUG = bool(os.environ.get('DEBUG') == 'True')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'oc-lettings-1337.herokuapp.com', 'oc-lettings-1338.herokuapp.com']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+    'oc-lettings-1337.herokuapp.com',
+    'oc-lettings-1338.herokuapp.com'
+]
 
 
 # Application definition
