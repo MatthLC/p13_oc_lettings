@@ -120,7 +120,7 @@ Le déploiement est entièrement automatisé
 - Sentry : /oc_lettings_site/settings.py
   - sentry_sdk (Une variable d'environnement est utilisée afin de masquer la clé)
 
-#### Variables d'environnement
+#### Variables d'environnement 
 Toutes les variables devant être masquées se trouvent sur CircleCi en tant que variables d'environnement dédiées au projet `p13_orange_county_lettings`.
 
 | Variable | Description |
