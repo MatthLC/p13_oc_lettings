@@ -138,7 +138,7 @@ Toutes les variables devant être masquées se trouvent sur CircleCi en tant que
 
 Pour lancer une image en local :
 ```
-tagname est le tag de l'image
+tagname est le tag de l'image 
 docker run -d -p 8000:8000 matthlc92/oc-lettings-docker-build:tagname
 
 exemple:
